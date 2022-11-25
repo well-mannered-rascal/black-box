@@ -1,9 +1,19 @@
 <script lang="ts">
+  import page from "page";
   import { MenuIcon } from "svelte-feather-icons";
+
   export let projectTitle: String;
+  export let projectId: String | Number;
+
+  const navigateToProject = () => {
+    page(`project/${projectId}`);
+  };
 </script>
 
-<div class="project-list-item">
+<div
+  class="project-list-item"
+  on:click={navigateToProject}
+>
   <span>{projectTitle}</span>
   <!-- TODO: Open some sort of menu to allow user to delete, rename, and any additional actions -->
   <MenuIcon />
