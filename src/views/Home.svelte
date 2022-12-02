@@ -1,10 +1,19 @@
 <script lang="ts">
+  import { blackboxDB } from "../lib/db";
   import { PlusIcon } from "svelte-feather-icons";
   import AppHeader from "../components/AppHeader.svelte";
   import ProjectListItem from "../components/ProjectListItem.svelte";
+  import page from "page";
 
-  const createNewProject = () => {
-    console.log("click");
+  export let props;
+
+  const createNewProject = async () => {
+    const title = prompt("New project title:");
+    const id = await blackboxDB.project.add({
+      title,
+      patterns: [],
+    });
+    page(`project/${id}`);
   };
 </script>
 
