@@ -20,7 +20,7 @@ export interface Pattern {
 }
 
 export interface Project {
-  readonly id: number;
+  readonly id?: number;
   title: string;
   patterns: Pattern[];
 }
