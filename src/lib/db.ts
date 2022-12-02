@@ -3,7 +3,7 @@ import type { Table } from "dexie";
 
 import type { Project } from "./types";
 
-export class DexieDB extends Dexie {
+export class BlackBoxDB extends Dexie {
   project!: Table<Project>;
   constructor() {
     super("blackboxDB");
@@ -11,6 +11,16 @@ export class DexieDB extends Dexie {
       project: "++id, title, patterns",
     });
   }
+
+  async createNewProject(title: string): Promise<string> {
+
+    const id = await blackboxDB.project.add({
+      title,
+      patterns: [],
+    });
+
+    return id.toString();
+  }
 }
 
-export const blackboxDB = new DexieDB();
+export const blackboxDB = new BlackBoxDB();
