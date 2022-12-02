@@ -13,7 +13,10 @@
   <div class="project-item-container">
     <!-- TODO Load project information from state management here, sort alphabetical -->
     {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as projectNum}
-      <ProjectListItem projectTitle={`Project ${projectNum}`} />
+      <ProjectListItem
+        projectTitle={`Project ${projectNum}`}
+        projectId={projectNum}
+      />
     {/each}
   </div>
   <button
@@ -32,6 +35,10 @@
     padding-bottom: 75px;
     overflow: auto;
   }
+  .project-item-container::-webkit-scrollbar {
+    display: none;
+  }
+
   .new-project-button {
     all: unset;
     cursor: pointer;
