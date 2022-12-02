@@ -10,6 +10,7 @@ export interface PatternState {
 
 export interface Pattern {
   readonly id: number;
+  index: number;
   bpm?: number;
   scale: string; // i.e. 'chromatic, 'c major', 'c# minor', etc
   stepCount: number;
