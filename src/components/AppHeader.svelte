@@ -24,6 +24,7 @@
 
 <style>
   .app-header {
+    width: 100vw;
     height: 50px;
     background-color: rgb(20, 20, 20);
     padding: 10px 15px;
