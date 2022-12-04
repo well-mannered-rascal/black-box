@@ -27,7 +27,13 @@
       >
         {#each Object.entries(pattern.state) as [note, steps], i}
           <tr class="note-row">
-            <th class="note">{note}</th>
+            {#if note.length < 3}
+              <th class="note">{note}</th>
+            {:else}
+              <th class="note">
+                {note[0]}<sup>{note[1]}</sup>{note[2]}
+              </th>
+            {/if}
             <td>
               <div class="steps">
                 {#each steps as step}
@@ -50,6 +56,10 @@
 </div>
 
 <style>
+  sup {
+    font-size: x-small;
+    margin-top: -7px;
+  }
   .pattern-container {
     max-height: 80vh;
 
