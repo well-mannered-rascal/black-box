@@ -9,10 +9,7 @@
 
   const createNewProject = async () => {
     const title = prompt("New project title:");
-    const id = await blackboxDB.project.add({
-      title,
-      patterns: [],
-    });
+    const id = await blackboxDB.createNewProject(title);
     page(`project/${id}`);
   };
 </script>
