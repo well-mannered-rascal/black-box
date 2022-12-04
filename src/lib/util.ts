@@ -1,50 +1,82 @@
-import type { Project } from "./types";
+import type { Step, Pattern, Project } from "./types";
+import { v4 as uuid } from "uuid";
 
-// Fully chromatic, for stress testing
-export const generateArbitraryEmptyProjectState = (
-  patterns: number,
-  stepSize: number
+export const PATTERN_DEFAULTS = {
+  stepCount: 64,
+  subdivision: 4,
+  scale: "chromatic",
+  bpm: 90,
+  octaves: 2,
+  rootOctave: 3,
+};
+
+export const SCALES = {
+  chromatic: [
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
+  ],
+};
+
+interface PatternOptions {
+  stepCount?: number;
+  // scale?: string;
+  subdivision?: number;
+  bpm?: number;
+  octaves?: number;
+  rootOctave?: number;
+}
+/** Generates a new pattern with provided configuration or global defaults
+ * NOTE: Hardcoded to chromatic scale
+ */
+export const newPattern = (
+  index: number,
+  options: PatternOptions = {
+    stepCount: PATTERN_DEFAULTS.stepCount,
+    subdivision: PATTERN_DEFAULTS.subdivision,
+    bpm: PATTERN_DEFAULTS.bpm,
+    octaves: PATTERN_DEFAULTS.octaves,
+    rootOctave: PATTERN_DEFAULTS.rootOctave,
+  }
 ) => {
-  const matrix: Project = {};
+  let { stepCount, subdivision, bpm, octaves, rootOctave } = options;
 
-  for (
-    let patternIndex = 0;
-    patternIndex < patterns;
-    patternIndex++
-  ) {
-    matrix[patternIndex] = {
-      C4: new Array<number>(),
-      "C#4": new Array<number>(),
-      D4: new Array<number>(),
-      "D#4": new Array<number>(),
-      E4: new Array<number>(),
-      F4: new Array<number>(),
-      "F#4": new Array<number>(),
-      G4: new Array<number>(),
-      "G#4": new Array<number>(),
-      A4: new Array<number>(),
-      "A#4": new Array<number>(),
-      B4: new Array<number>(),
-      C5: new Array<number>(),
-      "C#5": new Array<number>(),
-      D5: new Array<number>(),
-      "D#5": new Array<number>(),
-      E5: new Array<number>(),
-      F5: new Array<number>(),
-      "F#5": new Array<number>(),
-      G5: new Array<number>(),
-      "G#5": new Array<number>(),
-      A5: new Array<number>(),
-      "A#5": new Array<number>(),
-      B5: new Array<number>(),
-    };
+  const pattern: Pattern = {
+    id: uuid(),
+    index,
+    stepCount,
+    scale: "chromatic",
+    subdivision,
+    bpm,
+    octaves,
+    rootOctave,
+    state: {},
+  };
 
-    Object.entries(matrix[patternIndex]).forEach(([note]) => {
-      for (let stepIndex = 0; stepIndex < stepSize; stepIndex++) {
-        matrix[patternIndex][note].push(0);
+  for (let octaveIndex = 0; octaveIndex < octaves; octaveIndex++) {
+    for (let noteLetter of SCALES.chromatic) {
+      const note = `${noteLetter}${rootOctave + octaveIndex}`;
+      let noteRow: Step[] = [];
+      for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
+        noteRow[stepIndex] = {
+          note,
+          index: stepIndex,
+          active: false,
+        };
       }
-    });
+      pattern.state[note] = noteRow;
+    }
   }
 
-  return matrix;
+  console.log(pattern);
+  return pattern;
 };
