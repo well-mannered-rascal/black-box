@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Project, Pattern } from "../lib/types";
+  import { SCALES } from "../lib/util";
 
   export let project: Project;
   export let selectedPatternIndex = 0;
@@ -20,25 +21,30 @@
   </div>
   <div class="pattern-container">
     {#each project.patterns as pattern}
-      <div
+      <table
         class="pattern"
         class:hidden={selectedPatternIndex !== pattern.index}
       >
-        {#each Object.entries(pattern.state) as [note, steps]}
-          <div class="note-row">
-            <span class="note">{note}</span>
-            <div class="steps">
-              {#each steps as step}
-                <input
-                  class="step"
-                  type="checkbox"
-                  default={step.active}
-                />
-              {/each}
-            </div>
-          </div>
+        {#each Object.entries(pattern.state) as [note, steps], i}
+          <tr class="note-row">
+            <th class="note">{note}</th>
+            <td>
+              <div class="steps">
+                {#each steps as step}
+                  <input
+                    class="step"
+                    type="checkbox"
+                    default={step.active}
+                  />
+                {/each}
+              </div>
+            </td>
+          </tr>
+          {#if (i + 1) % SCALES[pattern.scale].length === 0 && i + 1 < Object.keys(pattern.state).length}
+            <tr class="octave-spacer" />
+          {/if}
         {/each}
-      </div>
+      </table>
     {/each}
   </div>
 </div>
@@ -46,7 +52,9 @@
 <style>
   .pattern-container {
     max-height: 80vh;
-    overflow-y: scroll;
+
+    overflow-y: auto;
+    overflow-x: auto;
   }
   .pattern-tab-bar {
     display: flex;
@@ -70,10 +78,10 @@
     height: 25px;
   }
   .pattern {
-    /* width: 100%; */
-    background-color: white;
-    overflow-y: scroll;
-    overflow-x: auto;
+    width: 100%;
+    height: 100%;
+    margin-left: -10px;
+    background-color: rgb(50, 50, 50);
     position: relative;
   }
   .hidden {
@@ -81,25 +89,37 @@
   }
   .note-row {
     display: flex;
-    height: 30px;
+    align-items: center;
+    height: 40px;
+  }
+  .octave-spacer {
+    margin: 10px 10px;
+    height: 1px;
+    background-color: rgb(75, 75, 75);
+    display: block;
+    width: 100%;
   }
   .note {
-    min-width: 50px;
+    border: 1px solid rgb(100, 100, 100);
+    min-width: 55px;
     height: 30px;
     padding: 10px;
-    position: absolute;
+    position: sticky;
+    left: 0;
+    z-index: 100;
+    display: flex;
     background-color: black;
     color: white;
-    display: flex;
     align-items: center;
-    justify-content: end;
   }
   .steps {
-    margin-left: 60px;
+    margin-left: 20px;
     display: flex;
+    align-items: center;
   }
   .step {
+    height: 25px;
+    width: 25px;
     margin-right: 5px;
-    height: 30px;
   }
 </style>
