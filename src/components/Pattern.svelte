@@ -1,9 +1,22 @@
 <script lang="ts">
-  import type { Project, Pattern } from "../lib/types";
+  import { blackboxDB } from "../lib/db";
+  import type { Project, Step } from "../lib/types";
   import { SCALES } from "../lib/util";
 
   export let project: Project;
   export let selectedPatternIndex = 0;
+
+  const toggleStep = (active, step: Step) => {
+    console.log(active);
+    step.active = !!active;
+    project.patterns[selectedPatternIndex].state[step.note][
+      step.index
+    ].active = active;
+    blackboxDB.project.put(project, project.id);
+    blackboxDB.project
+      .get(project.id)
+      .then((result) => console.log(result));
+  };
 </script>
 
 <div>
@@ -40,7 +53,9 @@
                   <input
                     class="step"
                     type="checkbox"
-                    default={step.active}
+                    checked={step.active}
+                    on:change={(event) =>
+                      toggleStep(event.target["checked"], step)}
                   />
                 {/each}
               </div>
@@ -116,7 +131,6 @@
     padding: 10px;
     position: sticky;
     left: 0;
-    z-index: 100;
     display: flex;
     background-color: black;
     color: white;
