@@ -7,6 +7,8 @@
 
   export let props;
 
+  const projectsPromise = blackboxDB.getAllProjects();
+
   const createNewProject = async () => {
     const title = prompt("New project title:");
     const id = await blackboxDB.createNewProject(title);
@@ -17,13 +19,20 @@
 <div>
   <AppHeader />
   <div class="project-item-container">
-    <!-- TODO Load project information from state management here, sort alphabetical -->
-    {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as projectNum}
-      <ProjectListItem
-        projectTitle={`Project ${projectNum}`}
-        projectId={projectNum}
-      />
-    {/each}
+    {#await projectsPromise}
+      Loading...
+    {:then projects}
+      {#if projects.length}
+        {#each projects as { title, id }}
+          <ProjectListItem
+            projectTitle={title}
+            projectId={id}
+          />
+        {/each}
+      {:else}
+        <div class="no-projects-alert">No saved projects found!</div>
+      {/if}
+    {/await}
   </div>
   <button
     class="new-project-button"
@@ -61,5 +70,16 @@
   }
   .new-project-button:active {
     background-color: rgb(200, 200, 200);
+  }
+  .no-projects-alert {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 80%;
+    color: rgb(220, 220, 220);
+    background-color: rgb(75, 75, 75);
+    border: 1px solid rgb(120, 120, 120);
   }
 </style>
