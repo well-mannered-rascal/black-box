@@ -29,6 +29,10 @@ export class BlackBoxDB extends Dexie {
   async getAllProjects() {
     return await this.project.toArray();
   }
+
+  updateProject(project: Project) {
+    blackboxDB.project.put(project, project.id);
+  }
 }
 
 export const blackboxDB = new BlackBoxDB();
