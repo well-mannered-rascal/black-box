@@ -6,10 +6,11 @@
   export let project: Project;
   export let selectedPatternIndex = 0;
 
-  const toggleStep = (active: boolean, step: Step) => {
+  const toggleStep = (step: Step) => {
     // the step object is still referencing the value stored
     // inside the parent project object, so updates are super easy
-    step.active = !!active;
+    step.active = !step.active;
+    project = project;
     blackboxDB.updateProject(project);
   };
 </script>
@@ -45,13 +46,15 @@
             <td>
               <div class="steps">
                 {#each steps as step}
-                  <input
+                  <div
                     class="step"
-                    type="checkbox"
-                    checked={step.active}
-                    on:change={(event) =>
-                      toggleStep(event.target["checked"], step)}
-                  />
+                    class:downbeat={step.index %
+                      pattern.subdivision ===
+                      0}
+                    on:click={() => toggleStep(step)}
+                  >
+                    <div class:active-step={step.active} />
+                  </div>
                 {/each}
               </div>
             </td>
@@ -90,6 +93,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 10%;
+    font-weight: bold;
+    font-size: larger;
   }
   .current-tab {
     color: black;
@@ -130,6 +136,7 @@
     background-color: black;
     color: white;
     align-items: center;
+    border-radius: 10%;
   }
   .steps {
     margin-left: 20px;
@@ -140,5 +147,20 @@
     height: 25px;
     width: 25px;
     margin-right: 5px;
+    background-color: rgb(220, 220, 220);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25%;
+  }
+  .downbeat {
+    background-color: rgb(139, 139, 139);
+  }
+  .active-step {
+    height: 20px;
+    width: 20px;
+    background-color: rgb(0, 198, 205);
+    border-radius: 25%;
+    border: 1px solid black;
   }
 </style>
