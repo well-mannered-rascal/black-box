@@ -6,16 +6,11 @@
   export let project: Project;
   export let selectedPatternIndex = 0;
 
-  const toggleStep = (active, step: Step) => {
-    console.log(active);
+  const toggleStep = (active: boolean, step: Step) => {
+    // the step object is still referencing the value stored
+    // inside the parent project object, so updates are super easy
     step.active = !!active;
-    project.patterns[selectedPatternIndex].state[step.note][
-      step.index
-    ].active = active;
-    blackboxDB.project.put(project, project.id);
-    blackboxDB.project
-      .get(project.id)
-      .then((result) => console.log(result));
+    blackboxDB.updateProject(project);
   };
 </script>
 
