@@ -1,15 +1,20 @@
 <script lang="ts">
   import { blackboxDB } from "../lib/db";
+  import type { Playback } from "../lib/sound";
   import type { Project, Step } from "../lib/types";
   import { SCALES } from "../lib/util";
 
   export let project: Project;
   export let selectedPatternIndex = 0;
+  export let playback: Playback;
 
   const toggleStep = (step: Step) => {
     // the step object is still referencing the value stored
     // inside the parent project object, so updates are super easy
     step.active = !step.active;
+    if (step.active) {
+      playback.playNote(step.note);
+    }
     project = project;
     blackboxDB.updateProject(project);
   };
