@@ -1,13 +1,18 @@
 <script lang="ts">
+  import * as Tone from "tone";
   import { blackboxDB } from "../lib/db";
   import AppHeader from "../components/AppHeader.svelte";
   import Pattern from "../components/Pattern.svelte";
+  import { Playback } from "../lib/sound";
 
   export let props;
   const projectId = parseInt(props.projectId);
+  let playback: Playback;
 
   let projectPromise = blackboxDB.getProject(projectId);
-
+  projectPromise.then(
+    (project) => (playback = new Playback(project))
+  );
   let selectedPatternIndex = 0;
 </script>
 
@@ -20,11 +25,18 @@
       <Pattern
         {project}
         {selectedPatternIndex}
+        {playback}
       />
     </div>
     <div class="media-controls">
       <div class="media-button">Previous</div>
-      <div class="media-button">Play/Pause</div>
+      <div
+        class="media-button"
+        on:click={() =>
+          playback.isPlaying ? playback.stop() : playback.start()}
+      >
+        Play/Pause
+      </div>
       <div class="media-button">Next</div>
     </div>
   {:catch error}
