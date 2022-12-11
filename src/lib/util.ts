@@ -88,8 +88,4 @@ export const focusStep = (
   index
 ) => {
   console.log(target.getBoundingClientRect().width * index);
-  container.scrollLeft =
-    target.getBoundingClientRect().width * index +
-    container.getBoundingClientRect().width -
-    30;
 };
