@@ -33,7 +33,9 @@
       <div
         class="media-button"
         on:click={() =>
-          playback.isPlaying ? playback.stop() : playback.start()}
+          playback.isPlaying
+            ? playback.stop()
+            : playback.start(selectedPatternIndex)}
       >
         Play/Pause
       </div>
