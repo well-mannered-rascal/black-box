@@ -1,8 +1,8 @@
 <script lang="ts">
   import { blackboxDB } from "../lib/db";
   import type { Playback } from "../lib/sound";
-  import type { Project, Step } from "../lib/types";
-  import { SCALES } from "../lib/util";
+  import type { Project, Step, Pattern } from "../lib/types";
+  import { focusStep, SCALES } from "../lib/util";
 
   export let project: Project;
   export let selectedPatternIndex = 0;
@@ -39,6 +39,36 @@
         class="pattern"
         class:hidden={selectedPatternIndex !== pattern.index}
       >
+        <tr class="cursor-row">
+          <th class="cursor-hidden-overlay" />
+          <td>
+            <div class="cursor-steps">
+              {#each { length: pattern.stepCount } as _, i}
+                <div
+                  class="step cursor-step"
+                  on:click={() => {
+                    playback.playbackCursor.step = i;
+
+                    focusStep(
+                      document
+                        .getElementsByClassName("cursor-step")
+                        .item(i),
+                      document
+                        .getElementsByClassName("pattern-container")
+                        .item(selectedPatternIndex),
+                      playback.playbackCursor.step
+                    );
+                  }}
+                >
+                  <div
+                    class:cursor-active={playback.playbackCursor
+                      .step === i}
+                  />
+                </div>
+              {/each}
+            </div>
+          </td>
+        </tr>
         {#each Object.entries(pattern.state) as [note, steps], i}
           <tr class="note-row">
             {#if note.length < 3}
@@ -56,6 +86,8 @@
                     class:downbeat={step.index %
                       pattern.subdivision ===
                       0}
+                    class:cursor-step-active={step.index ===
+                      playback.playbackCursor.step}
                     on:click={() => toggleStep(step)}
                   >
                     <div class:active-step={step.active} />
@@ -133,10 +165,11 @@
   .note {
     border: 1px solid rgb(100, 100, 100);
     min-width: 55px;
-    height: 30px;
+    height: 35px;
     padding: 10px;
     position: sticky;
-    left: 0;
+    z-index: 1;
+    left: -2px;
     display: flex;
     background-color: black;
     color: white;
@@ -167,5 +200,50 @@
     background-color: rgb(0, 198, 205);
     border-radius: 25%;
     border: 1px solid black;
+  }
+
+  .cursor-row {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    position: sticky;
+    background-color: rgb(50, 50, 50);
+    top: -2px;
+    z-index: 2;
+  }
+  .cursor-steps {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(10, 10, 10);
+  }
+  .cursor-step {
+    background-color: rgb(10, 10, 10);
+  }
+  .cursor-active {
+    height: 35px;
+    width: 25px;
+    background-color: rgb(255, 75, 75);
+    border-radius: 25%;
+    border: 1px solid black;
+  }
+  .cursor-step-active {
+    height: 40px;
+    width: 25px;
+    background-color: rgba(255, 0, 0, 0.551);
+    border-radius: 0%;
+  }
+  .cursor-hidden-overlay {
+    min-width: 55px;
+    height: 30px;
+    padding: 20px;
+    position: sticky;
+    left: -2px;
+    display: flex;
+    background-color: rgb(50, 50, 50);
+    color: white;
+    align-items: center;
+    border-radius: 10%;
   }
 </style>
