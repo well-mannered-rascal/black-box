@@ -80,3 +80,16 @@ export const newPattern = (
   console.log(pattern);
   return pattern;
 };
+
+/** Given a step element, scrolls back to top with an optional offset */
+export const focusStep = (
+  target: Element,
+  container: Element,
+  index
+) => {
+  console.log(target.getBoundingClientRect().width * index);
+  container.scrollLeft =
+    target.getBoundingClientRect().width * index +
+    container.getBoundingClientRect().width -
+    30;
+};
